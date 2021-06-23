@@ -1,0 +1,24 @@
+query getWorkbooks {
+  workbooksConnection(first: 10000) {
+    nodes {
+      id
+      luid
+      name
+
+      embeddedDatasources {
+        id
+        name
+
+        upstreamTables(filter: { connectionType: "%(connection_type)s" }) {
+          database {
+            name
+          }
+
+          schema
+          fullName
+          connectionType
+        }
+      }
+    }
+  }
+}

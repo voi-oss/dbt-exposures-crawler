@@ -1,0 +1,19 @@
+[[source]]
+name = 'pypi'
+url = 'https://pypi.org/simple'
+verify_ssl = true
+
+[requires]
+python_version = '3.9'
+
+[packages]
+tableauserverclient = '~= 0.10'
+python-slugify = '~= 4.0.1'
+click = '~= 8.0.1'
+
+[dev-packages]
+black = '== 21.6b0'
+mypy = '~= 0.902'
+types-python-slugify = '*'
+pytest = '~= 6.2.4'
+flake8 = '~= 3.9.2'

@@ -1,0 +1,27 @@
+query listCustomSQLTables {
+  customSQLTablesConnection(first: 10000){
+    nodes {
+
+      query
+      name
+      isEmbedded
+
+      database {
+        name
+        connectionType
+      }
+
+      ## This refers to the actual database tables the query references
+      ## This attribute will be empty if the Metadata API/Catalog SQL Parser
+      ## was unable to fully parse this SQL statement,.
+      tables {
+        name
+      }
+
+      downstreamWorkbooks {
+        luid
+        name
+      }
+    }
+  }
+}
