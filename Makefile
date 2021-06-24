@@ -1,19 +1,19 @@
 .PHONY: type
 type:
 	@echo "Running mypy"
-	@mypy src/
+	@pipenv run mypy src/
 
 .PHONY: lint
 lint:
 	@echo "Running black"
-	@black .
+	@pipenv run black .
 	@echo "Running flake"
-	@flake8
+	@pipenv run flake8
 
 .PHONY: test
 test:
 	@echo "Running pytest"
-	@pytest
+	@pipenv run pytest
 
 .PHONY: ci
 ci: type lint test
