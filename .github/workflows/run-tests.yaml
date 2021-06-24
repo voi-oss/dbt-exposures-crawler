@@ -1,4 +1,4 @@
-name: Run tests
+name: Tests
 
 on:
   push:
@@ -31,7 +31,7 @@ jobs:
         run: pipenv install --dev
 
       - name: Install this package
-        run: pip install .
+        run: pipenv install .
 
       - name: Run tests
         run: make test
