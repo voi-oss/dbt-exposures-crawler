@@ -5,7 +5,7 @@
 [![codecov](https://codecov.io/gh/voi-oss/dbt-exposures-crawler/branch/main/graph/badge.svg?token=5JS1RLYRQF)](https://codecov.io/gh/voi-oss/dbt-exposures-crawler)
 [![Apache License 2.0](https://img.shields.io/github/license/voi-oss/dbt-exposures-crawler)](https://github.com/voi-oss/dbt-exposures-crawler/)
 
-Automates the creation of dbt exposures from different sources. Currently, only Tableau workbooks using Snowflake SQL is
+Automates the creation of dbt exposures from different sources. Currently, only Tableau workbooks using Snowflake SQL are
 supported as a source.
 
 > This project is in an ALPHA stage. Internal and external APIs might change between minor versions.
