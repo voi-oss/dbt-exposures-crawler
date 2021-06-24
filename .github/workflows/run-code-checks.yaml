@@ -19,8 +19,7 @@ jobs:
           python-version: '3.9.x'
 
       - name: Install system dependencies
-        run: |
-          pip3 install pipenv
+        run: pip3 install pipenv
 
       - name: Cache Python packages
         uses: actions/cache@v2
@@ -29,13 +28,10 @@ jobs:
           key: ${{ runner.os }}-python-${{ hashFiles('**/Pipfile.lock') }}
 
       - name: Install Python dependencies
-        run: |
-          pipenv install --dev
+        run: pipenv install --dev
 
       - name: Run type checking
-        run: |
-          make type
+        run: make type
 
       - name: Run lint tools
-        run: |
-          make lint
+        run: make lint
