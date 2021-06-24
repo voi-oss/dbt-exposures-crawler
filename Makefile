@@ -18,7 +18,7 @@ test:
 .PHONY: test-coverage
 test-coverage:
 	@echo "Running pytest (with coverage)"
-	@pipenv run pytest --cov
+	@pipenv run pytest --cov --cov-report=xml
 
 .PHONY: ci
 ci: type lint test
