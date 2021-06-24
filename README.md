@@ -2,6 +2,7 @@
 
 [![Tests](https://github.com/voi-oss/dbt-exposures-crawler/actions/workflows/run-tests.yaml/badge.svg)](https://github.com/voi-oss/dbt-exposures-crawler/actions/workflows/run-tests.yaml)
 [![Code checks](https://github.com/voi-oss/dbt-exposures-crawler/actions/workflows/run-code-checks.yaml/badge.svg)](https://github.com/voi-oss/dbt-exposures-crawler/actions/workflows/run-code-checks.yaml)
+[![Apache License 2.0](https://img.shields.io/github/license/voi-oss/dbt-exposures-crawler)](https://github.com/voi-oss/dbt-exposures-crawler/)
 
 Automates the creation of dbt exposures from different sources. Currently, only Tableau workbooks using Snowflake SQL is
 supported as a source.
