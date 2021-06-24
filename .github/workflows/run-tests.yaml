@@ -31,7 +31,7 @@ jobs:
         run: pipenv install --dev
 
       - name: Install this package
-        run: pip install .
+        run: pipenv run pip3 install .
 
       - name: Run tests (with coverage)
         run: make test-coverage
