@@ -1,0 +1,42 @@
+name: Tests
+
+on:
+  push:
+    branches: main
+  pull_request:
+    branches: main
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9.x'
+
+      - name: Install system dependencies
+        run: pip3 install pipenv
+
+      - name: Cache Python packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.local/share/virtualenvs/
+          key: ${{ runner.os }}-python-${{ hashFiles('**/Pipfile.lock') }}
+
+      - name: Install Python dependencies
+        run: pipenv install --dev
+
+      - name: Install this package
+        run: pipenv run pip3 install .
+
+      - name: Run tests (with coverage)
+        run: make test-coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          fail_ci_if_error: true
