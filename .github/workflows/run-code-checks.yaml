@@ -30,7 +30,7 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          pipenv install
+          pipenv install --dev
 
       - name: Run type checking
         run: |
