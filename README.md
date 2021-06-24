@@ -1,5 +1,8 @@
 # dbt exposures crawler
 
+[![Tests](https://github.com/voi-oss/dbt-exposures-crawler/actions/workflows/run-tests.yaml/badge.svg)](https://github.com/voi-oss/dbt-exposures-crawler/actions/workflows/run-tests.yaml)
+[![Code checks](https://github.com/voi-oss/dbt-exposures-crawler/actions/workflows/run-code-checks.yaml/badge.svg)](https://github.com/voi-oss/dbt-exposures-crawler/actions/workflows/run-code-checks.yaml)
+
 Automates the creation of dbt exposures from different sources. Currently, only Tableau workbooks using Snowflake SQL is
 supported as a source.
 
