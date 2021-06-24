@@ -31,7 +31,6 @@ jobs:
       - name: Install Python dependencies
         run: |
           pipenv install
-          pipenv shell
 
       - name: Run tests
         run: |
