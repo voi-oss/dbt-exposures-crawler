@@ -83,20 +83,52 @@ Now suppose that you company has 4 workbooks on Tableau:
 
 When running this project, you would get the following console output:
 
-![CLI example](docs/cli_output.png)
+<p align="center">
+    <a href="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/cli_output.png">
+        <img 
+          src="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/cli_output.png?raw=true" 
+          alt="CLI example"
+          width="600px"
+        />
+    </a>
+</p>
 
 The `manifest.json` that you provided would have 3 new exposures added to it, such as:
 
-![modified manifest](docs/modified_manifest.png)
+<p align="center">
+    <a href="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/modified_manifest.png">
+        <img 
+          src="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/modified_manifest.png?raw=true" 
+          alt="modified manifest"
+          width="600px"
+        />
+    </a>
+</p>
 
 Those exposures can then be visualized through your dbt documentation portal, either by finding which exposures are
 downstream dependencies of a certain model:
 
-![models in the documentation portal](docs/models.gif)
+<p align="center">
+    <a href="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/models.gif">
+        <img 
+          src="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/models.gif?raw=true" 
+          alt="models in the documentation portal"
+          width="600px"
+        />
+    </a>
+</p>
 
 Or by doing the inverse. Starting from an exposure, find which models are used on it:
 
-![exposures in the documentation portal](docs/exposures.gif)
+<p align="center">
+    <a href="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/exposures.gif">
+        <img 
+          src="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/exposures.gif?raw=true" 
+          alt="exposures in the documentation portal"
+          width="600px"
+        />
+    </a>
+</p>
 
 This example has been taken from the integration tests available in this project. You can read more in the `Testing`
 section below.
