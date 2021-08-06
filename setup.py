@@ -19,6 +19,7 @@ setup(
     long_description_content_type='text/markdown',
     url='https://github.com/voi-oss/dbt-exposures-crawler',
     author='Voi Technology AB',
+    author_email='opensource@voiapp.io',
     license='Apache License, Version 2.0',
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -28,6 +29,9 @@ setup(
     ],
     package_dir={'': 'src'},
     packages=find_packages(where='src'),
+    package_data={
+        'exposurescrawler': ['**/*.txt']
+    },
     python_requires='>=3.9, <4',
     setup_requires=['wheel', 'setuptools_scm'],
     install_requires=[
