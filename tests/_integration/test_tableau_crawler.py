@@ -130,6 +130,7 @@ def mock_tableau_rest_api():
             'webpage_url',
             'owner_id',
             'project_name',
+            'tags',
             'created_at',
             'updated_at',
         ],
@@ -140,6 +141,7 @@ def mock_tableau_rest_api():
             'http://hostname/path/to/workbook',
             'owner-id',
             'A Tableau folder',
+            [],
             'created-at',
             'updated-at',
         ],
@@ -150,7 +152,9 @@ def mock_tableau_rest_api():
     workbook_details = {
         'customers-workbook-luid': WorkbookDetailsMock(id='aaa', name='Customers workbook'),
         'company-kpis-workbook-luid': WorkbookDetailsMock(id='bbb', name='Company KPIs workbook'),
-        'orders-workbook-luid': WorkbookDetailsMock(id='ccc', name='Orders workbook'),
+        'orders-workbook-luid': WorkbookDetailsMock(
+            id='ccc', name='Orders workbook', tags=['certified']
+        ),
     }
 
     def _get_workbook_details(workbook_id):
@@ -186,6 +190,7 @@ def test_tableau_crawler(manifest_path):
         assert 'Workbook description' in exposure['description']
         assert 'https://my-tableau-server.com/path/to/workbook' in exposure['description']
         assert exposure['type'] == 'Dashboard'
+        assert exposure['tags'] == ['tableau:certified']
         assert exposure['depends_on'] == {'nodes': ['model.jaffle_shop.orders']}
         assert exposure['owner'] == {
             'name': 'John Doe',
