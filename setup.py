@@ -9,7 +9,7 @@ long_description = (current_folder / 'README.md').read_text(encoding='utf-8')
 # Based on: https://packaging.python.org/tutorials/packaging-projects/
 setup(
     name='dbt-exposures-crawler',
-    version='0.0.1',
+    use_scm_version=True,
     description='Extracts information from different systems and convert them to dbt exposures',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -25,6 +25,7 @@ setup(
     package_dir={'': 'src'},
     packages=find_packages(where='src'),
     python_requires='>=3.9, <4',
+    setup_requires=['setuptools_scm'],
     install_requires=[
         'click ~= 8.0.1',
         'python-slugify ~= 4.0.1',
