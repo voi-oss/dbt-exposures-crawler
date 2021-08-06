@@ -13,7 +13,7 @@ setup(
     description='Extracts information from different systems and convert them to dbt exposures',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/voi-oss',
+    url='https://github.com/voi-oss/dbt-exposures-crawler',
     author='Voi Technology AB',
     classifiers=[
         'Development Status :: 3 - Alpha',

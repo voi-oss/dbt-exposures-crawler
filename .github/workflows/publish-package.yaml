@@ -1,0 +1,33 @@
+name: Publish package
+
+#on:
+#  release:
+#    types: [released]
+
+on:
+  pull_request:
+    branches:
+      - gh-action-release
+
+jobs:
+  publish-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9.x'
+
+      #      - name: Publish a Python distribution to PyPI
+      #        uses: pypa/gh-action-pypi-publish@release/v1
+      #        with:
+      #          user: __token__
+      #          password: ${{ secrets.PYPI_API_TOKEN }}
+
+      - name: Publish distribution to Test PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
