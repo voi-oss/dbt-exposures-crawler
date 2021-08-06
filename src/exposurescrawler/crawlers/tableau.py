@@ -4,6 +4,7 @@ import os
 from typing import Collection
 
 import click
+
 from exposurescrawler.dbt.exposure import DbtExposure
 from exposurescrawler.dbt.manifest import DbtManifest
 from exposurescrawler.tableau.graphql_client import (
@@ -37,24 +38,25 @@ def _parse_tables_from_sql(workbooks_sqls: WorkbookModelsMapping, models) -> Wor
 
     for workbook_reference, custom_sqls in workbooks_sqls.items():
         # a list of dbt model represented as their original dicts from the manifest
-        found: list[dict] = []
+        all_found: list[dict] = []
 
         for custom_sql in custom_sqls:
-            if models_found := search_model_in_query(custom_sql, models):
-                found.extend(models_found.values())
+            if models_found_query := search_model_in_query(custom_sql, models):
+                all_found.extend(models_found_query.values())
 
-        if found:
+        if all_found:
             logger().debug(
                 ' ✅ {}: found models {}'.format(
                     workbook_reference.name,
-                    [model['materialized_name'] for model in found],
+                    [model['materialized_name'] for model in all_found],
                 )
             )
-            output[workbook_reference] = list(models_found.values())
+
+            output[workbook_reference] = all_found
         else:
             logger().debug(f' ❌ {workbook_reference.name}: found no models')
 
-    logging.info(f'⚙️ Found {len(output.keys())} workbooks with linked models')
+    logger().info(f'⚙️ Found {len(output.keys())} workbooks with linked models')
     return output
 
 

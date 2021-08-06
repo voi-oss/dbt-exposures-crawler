@@ -29,9 +29,7 @@ setup(
     ],
     package_dir={'': 'src'},
     packages=find_packages(where='src'),
-    package_data={
-        'exposurescrawler': ['**/*.txt']
-    },
+    package_data={'exposurescrawler': ['**/*.txt']},
     python_requires='>=3.9, <4',
     setup_requires=['wheel', 'setuptools_scm'],
     install_requires=[
