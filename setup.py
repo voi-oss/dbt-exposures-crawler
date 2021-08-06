@@ -19,9 +19,9 @@ setup(
     long_description_content_type='text/markdown',
     url='https://github.com/voi-oss/dbt-exposures-crawler',
     author='Voi Technology AB',
+    license='Apache License, Version 2.0',
     classifiers=[
         'Development Status :: 3 - Alpha',
-        'License :: OSI Approved :: Apache Software License 2.0 (Apache-2.0)',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3 :: Only',
