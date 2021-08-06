@@ -25,7 +25,7 @@ setup(
     package_dir={'': 'src'},
     packages=find_packages(where='src'),
     python_requires='>=3.9, <4',
-    setup_requires=['setuptools_scm'],
+    setup_requires=['wheel', 'setuptools_scm'],
     install_requires=[
         'click ~= 8.0.1',
         'python-slugify ~= 4.0.1',
