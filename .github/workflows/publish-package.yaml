@@ -20,6 +20,9 @@ jobs:
         with:
           python-version: '3.9.x'
 
+      - name: Build the distribution package
+        run: make build
+
       #      - name: Publish a Python distribution to PyPI
       #        uses: pypa/gh-action-pypi-publish@release/v1
       #        with:

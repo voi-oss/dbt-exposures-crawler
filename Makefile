@@ -1,3 +1,11 @@
+.PHONY: build
+build: clean-build
+	python3 setup.py sdist bdist_wheel
+
+.PHONY: clean-build
+clean-build:
+	rm -rf build dist
+
 .PHONY: type
 type:
 	@echo "Running mypy"
