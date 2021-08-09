@@ -1,7 +1,7 @@
-from typing import Any, Mapping
+from typing import Any, Mapping, Dict
 
 
-def search_model_in_query(query: str, models: Mapping[str, Any]) -> dict[str, Any]:
+def search_model_in_query(query: str, models: Mapping[str, Any]) -> Dict[str, Any]:
     """
     Takes a SQL query and a sequence of models and returns which models (if any) were
     found in the query.
@@ -11,7 +11,7 @@ def search_model_in_query(query: str, models: Mapping[str, Any]) -> dict[str, An
     :return:
     """
 
-    found: dict[str, Any] = {}
+    found: Dict[str, Any] = {}
 
     query = query.lower().replace('"', '').replace("'", '')
 

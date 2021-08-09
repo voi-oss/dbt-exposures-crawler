@@ -1,11 +1,11 @@
 import logging
 import sys
-from functools import cache
+from functools import lru_cache
 
 FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
 
 
-@cache
+@lru_cache
 def logger():
     _logger = logging.getLogger("exposurescrawler")
     _logger.setLevel(logging.INFO)
