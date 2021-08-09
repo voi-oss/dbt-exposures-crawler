@@ -24,15 +24,13 @@ setup(
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3 :: Only',
     ],
     package_dir={'': 'src'},
     packages=find_packages(where='src'),
-    package_data={
-        'exposurescrawler': ['**/*.txt']
-    },
-    python_requires='>=3.9, <4',
+    package_data={'exposurescrawler': ['**/*.txt']},
+    python_requires='>=3.8, <4',
     setup_requires=['wheel', 'setuptools_scm'],
     install_requires=[
         'click ~= 8.0.1',

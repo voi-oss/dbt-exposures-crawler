@@ -1,9 +1,10 @@
 import itertools
 import logging
 import os
-from typing import Collection
+from typing import Collection, List
 
 import click
+
 from exposurescrawler.dbt.exposure import DbtExposure
 from exposurescrawler.dbt.manifest import DbtManifest
 from exposurescrawler.tableau.graphql_client import (
@@ -37,7 +38,7 @@ def _parse_tables_from_sql(workbooks_sqls: WorkbookModelsMapping, models) -> Wor
 
     for workbook_reference, custom_sqls in workbooks_sqls.items():
         # a list of dbt model represented as their original dicts from the manifest
-        found: list[dict] = []
+        found: List[dict] = []
 
         for custom_sql in custom_sqls:
             if models_found := search_model_in_query(custom_sql, models):
