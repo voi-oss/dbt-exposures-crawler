@@ -1,9 +1,9 @@
-from dataclasses import dataclass
-
 import os
 import re
+from dataclasses import dataclass, field
+from typing import Mapping, Any, Iterable
+
 from slugify import slugify
-from typing import Mapping
 
 
 @dataclass
@@ -14,13 +14,19 @@ class DbtExposure:
     url: str
     depends_on: Mapping
     owner: Mapping
+    tags: Iterable[str] = field(default_factory=list)
 
     resource_type: str = 'exposure'
     type: str = 'Dashboard'
 
     @classmethod
-    def from_tableau_workbook(cls, package_name, workbook, owner, models):  # noqa
-        name = 'tableau_' + slugify(workbook.name, separator='_')
+    def from_tableau_workbook(
+        cls, package_name: str, workbook: Any, owner: Any, models: Iterable[Mapping]
+    ):
+        # To guarantee that exposure names are unique, we append the first 3 characters of the
+        # Tableau internal id (UUID) instead of just using the workbook name
+        workbook_name_safe = slugify(workbook.name, separator='_')
+        name = f'tableau_{workbook_name_safe}_{workbook.id[0:3]}'
 
         '''
         Links coming from the Tableau API will be in the shape of
@@ -49,10 +55,10 @@ class DbtExposure:
         )
 
         depends_on = {'nodes': list(set([model['unique_id'] for model in models]))}
-
         owner = {'name': owner.fullname, 'email': owner.name}
+        tags = [f'tableau:{tag}' for tag in workbook.tags]
 
-        return cls(name, package_name, description, url, depends_on, owner)
+        return cls(name, package_name, description, url, depends_on, owner, tags)
 
     @property
     def unique_id(self) -> str:

@@ -1,11 +1,11 @@
-from collections import namedtuple
-
 import os
 import shutil
+from collections import namedtuple
 from pathlib import Path
-from pytest import fixture
 from tempfile import NamedTemporaryFile
 from unittest.mock import patch
+
+from pytest import fixture
 
 from exposurescrawler.crawlers.tableau import tableau_crawler
 from exposurescrawler.dbt.manifest import DbtManifest
@@ -124,20 +124,24 @@ def mock_tableau_rest_api():
     WorkbookDetailsMock = namedtuple(
         'WorkbookDetailsMock',
         [
+            'id',
             'name',
             'description',
             'webpage_url',
             'owner_id',
             'project_name',
+            'tags',
             'created_at',
             'updated_at',
         ],
         defaults=[
             None,
+            None,
             'Workbook description',
             'http://hostname/path/to/workbook',
             'owner-id',
             'A Tableau folder',
+            [],
             'created-at',
             'updated-at',
         ],
@@ -146,9 +150,11 @@ def mock_tableau_rest_api():
     UserDetailsMock = namedtuple('UserDetailsMock', ['id', 'fullname', 'name'])
 
     workbook_details = {
-        'customers-workbook-luid': WorkbookDetailsMock(name='Customers workbook'),
-        'company-kpis-workbook-luid': WorkbookDetailsMock(name='Company KPIs workbook'),
-        'orders-workbook-luid': WorkbookDetailsMock(name='Orders workbook'),
+        'customers-workbook-luid': WorkbookDetailsMock(id='aaa', name='Customers workbook'),
+        'company-kpis-workbook-luid': WorkbookDetailsMock(id='bbb', name='Company KPIs workbook'),
+        'orders-workbook-luid': WorkbookDetailsMock(
+            id='ccc', name='Orders workbook', tags=['certified']
+        ),
     }
 
     def _get_workbook_details(workbook_id):
@@ -177,13 +183,14 @@ def test_tableau_crawler(manifest_path):
         tableau_crawler(manifest_path, 'jeffle_shop', [], True)
 
         final_manifest = mock.call_args.args[0].data
-        exposure = final_manifest['exposures']['exposure.jeffle_shop.tableau_orders_workbook']
+        exposure = final_manifest['exposures']['exposure.jeffle_shop.tableau_orders_workbook_ccc']
 
         assert len(final_manifest['exposures']) == 3
-        assert exposure['name'] == 'tableau_orders_workbook'
+        assert exposure['name'] == 'tableau_orders_workbook_ccc'
         assert 'Workbook description' in exposure['description']
         assert 'https://my-tableau-server.com/path/to/workbook' in exposure['description']
         assert exposure['type'] == 'Dashboard'
+        assert exposure['tags'] == ['tableau:certified']
         assert exposure['depends_on'] == {'nodes': ['model.jaffle_shop.orders']}
         assert exposure['owner'] == {
             'name': 'John Doe',
