@@ -14,6 +14,18 @@ are supported as a source.
 > Please reach out if you try this at your own organization. Feedback is very appreciated, and we
 > would love to hear if you had any issues setting this up at your own.
 
+## Installation
+
+This project requires Python 3.8+. It has only been tested with dbt 0.19, Tableau Server 2021.1 and Snowflake SQL
+dialect.
+
+You can install the latest version of this package from PyPI by running the command below. Usage instructions can be
+found further below in this document.
+
+```shell
+$ pip install dbt-exposures-crawler
+```
+
 ## Motivation
 
 [dbt](https://www.getdbt.com/) is an open-source tool to manage data transformations in SQL. It automatically generates
@@ -139,17 +151,6 @@ section below.
 * Only custom SQL written on Tableau workbooks using fully qualified names (`DATABASE.SCHEMA.OBJECT`) will be detected;
 * For now, only Tableau workbooks (and not published data sources) are supported. Also, only Snowflake SQL is currently
   supported.
-
-## Installation
-
-This project requires Python 3.9+. It has only been tested with dbt 0.19, Tableau Server 2021.1 and Snowflake SQL
-dialect.
-
-Over the coming weeks we will have it published on PyPI and you will be able to install it by:
-
-```shell
-$ pip install dbt-exposures-crawler
-```
 
 ## Usage
 
