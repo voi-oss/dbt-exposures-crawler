@@ -18,6 +18,9 @@ from exposurescrawler.utils.query_parsing import search_model_in_query
 
 
 def _should_ignore_workbook(workbook, projects_to_ignore: Collection[str]) -> bool:
+    # Personal spaces have no project name and we ignore them.
+    if not workbook.project_name:
+        return True
     return workbook.project_name in projects_to_ignore
 
 
