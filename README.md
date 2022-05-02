@@ -237,6 +237,17 @@ $ cat target/manifest.json | jq > $PROJECT_ROOT/tests/_fixtures/manifest.json
 We are open and would love to have contributions, both in Pull Requests but also in ideas and feedback. Don't hesitate
 to create an Issue on this repository if you are trying this project in your organization or have anything to share.
 
+## Release
+
+There is a GitHub Action that will trigger a release of this package on PyPI based on releases created on GitHub.
+Steps:
+
+* Loosely follow [semantic versioning](https://semver.org/)
+* Remember to pretend the tag name with `v`
+* Use the tag name as the release title on GitHub
+* Use the auto-generated release notes from GitHub
+* Append a link at the end of the release notes to the released version on PyPI
+
 ## License
 
 This project is licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.
