@@ -98,8 +98,8 @@ When running this project, you would get the following console output:
 
 <p align="center">
     <a href="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/cli_output.png">
-        <img 
-          src="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/cli_output.png?raw=true" 
+        <img
+          src="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/cli_output.png?raw=true"
           alt="CLI example"
           width="600px"
         />
@@ -110,8 +110,8 @@ The `manifest.json` that you provided would have 3 new exposures added to it, su
 
 <p align="center">
     <a href="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/modified_manifest.png">
-        <img 
-          src="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/modified_manifest.png?raw=true" 
+        <img
+          src="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/modified_manifest.png?raw=true"
           alt="modified manifest"
           width="600px"
         />
@@ -123,8 +123,8 @@ downstream dependencies of a certain model:
 
 <p align="center">
     <a href="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/models.gif">
-        <img 
-          src="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/models.gif?raw=true" 
+        <img
+          src="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/models.gif?raw=true"
           alt="models in the documentation portal"
           width="600px"
         />
@@ -135,8 +135,8 @@ Or by doing the inverse. Starting from an exposure, find which models are used o
 
 <p align="center">
     <a href="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/exposures.gif">
-        <img 
-          src="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/exposures.gif?raw=true" 
+        <img
+          src="https://github.com/voi-oss/dbt-exposures-crawler/blob/main/docs/exposures.gif?raw=true"
           alt="exposures in the documentation portal"
           width="600px"
         />
@@ -146,11 +146,13 @@ Or by doing the inverse. Starting from an exposure, find which models are used o
 This example has been taken from the integration tests available in this project. You can read more in the `Testing`
 section below.
 
-## Assumptions and limitations
+## Features, assumptions and limitations
 
 * Only custom SQL written on Tableau workbooks using fully qualified names (`DATABASE.SCHEMA.OBJECT`) will be detected;
 * For now, only Tableau workbooks (and not published data sources) are supported. Also, only Snowflake SQL is currently
-  supported.
+  supported;
+* Workbooks that are created under Tableau's [Personal spaces](https://help.tableau.com/current/pro/desktop/en-us/personal_space.htm) 
+are ignored (since they usually not governed nor production-ready).
 
 ## Usage
 
