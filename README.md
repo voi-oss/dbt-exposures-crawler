@@ -72,7 +72,7 @@ heuristics, such as removing quotes and converting the custom SQL to lowercase. 
 normalized table names from Tableau, and the fully qualified names for the dbt nodes are available, the project tries to
 find the occurrences of the latter in the former.
 
-The result of the above is a mapping of workbooks and which dbt nodes they depend on. The workbooks that are created under [Personal spaces](https://help.tableau.com/current/pro/desktop/en-us/personal_space.htm#:~:text=Personal%20Space%20is%20a%20private,for%20others%20to%20see%20it.) have no project name and we ignore them. For every workbook (with mapped
+The result of the above is a mapping of workbooks and which dbt nodes they depend on. For every workbook (with mapped
 dependencies available), extra metadata that was not available in the Metadata API is then retrieved from Tableau by
 using their [REST API](https://help.tableau.com/current/api/rest_api/en-us/REST/rest_api.htm), including when the
 workbook was created, when it was last updated, to which folder it belongs on Tableau and information about the author
@@ -146,11 +146,13 @@ Or by doing the inverse. Starting from an exposure, find which models are used o
 This example has been taken from the integration tests available in this project. You can read more in the `Testing`
 section below.
 
-## Assumptions and limitations
+## Features, assumptions and limitations
 
 * Only custom SQL written on Tableau workbooks using fully qualified names (`DATABASE.SCHEMA.OBJECT`) will be detected;
 * For now, only Tableau workbooks (and not published data sources) are supported. Also, only Snowflake SQL is currently
-  supported.
+  supported;
+* Workbooks that are created under Tableau's [Personal spaces](https://help.tableau.com/current/pro/desktop/en-us/personal_space.htm) 
+are ignored (since they usually not governed nor production-ready).
 
 ## Usage
 
