@@ -240,7 +240,7 @@ to create an Issue on this repository if you are trying this project in your org
 ## Release
 
 There is a GitHub Action that will trigger a release of this package on PyPI based on releases done on GitHub.
-We loosely follow [semantic versioning](https://semver.org/), and we use the auto-generated release notes from GitHub and we append a link to the released version on PyPI.
+We loosely follow [semantic versioning](https://semver.org/), we use the auto-generated release notes from GitHub and we append a link at the end of the release notes to the released version on PyPI.
 
 ## License
 
