@@ -168,9 +168,10 @@ following:
 To run this project, we use:
 
 ```shell
-python3 -m exposurescrawler.crawlers.tableau \
+$ python3 -m exposurescrawler.crawlers.tableau \
             --manifest-path=~path/to/dbt/target/manifest.json \
-            --ignore-projects Archive \
+            --dbt-package-name="your_dbt_pakage_name" \
+            --tableau-ignore-projects Archive \
             --verbose
 ```
 
