@@ -23,7 +23,7 @@ You can install the latest version of this package from PyPI by running the comm
 found further below in this document.
 
 ```shell
-pip install dbt-exposures-crawler
+$ pip install dbt-exposures-crawler
 ```
 
 ## Motivation
@@ -166,7 +166,7 @@ following:
 To run this project, we use:
 
 ```shell
-python3 -m exposurescrawler.crawlers.tableau \
+$ python3 -m exposurescrawler.crawlers.tableau \
             --manifest-path=~path/to/dbt/target/manifest.json \
             --dbt-package-name="your_dbt_pakage_name" \
             --tableau-ignore-projects Archive \
@@ -180,7 +180,7 @@ Make sure you check the `.env.example` file to see which environment variables m
 Clone the repository and install it in editable mode:
 
 ```shell
-pip install -e .
+$ pip install -e .
 ```
 
 Before opening a pull request, make sure you run:
@@ -205,24 +205,24 @@ For the integration tests, we use a sample `manifest.json` as a fixture. It was 
 the [jaffle_shop](https://github.com/fishtown-analytics/jaffle_shop), an official dbt sample project.
 
 ```shell
-git clone https://github.com/fishtown-analytics/jaffle_shop
-cd jaffle_shop
-pipenv shell
-pip install dbt==0.19.1
+$ git clone https://github.com/fishtown-analytics/jaffle_shop
+$ cd jaffle_shop
+$ pipenv shell
+$ pip install dbt==0.19.1
 ```
 
 After adding an entry on my dbt profile and then setting the default database on the project to `sample_dbt` on
 the `dbt_project.yaml`:
 
 ```shell
-dbt compile --target prod
+$ dbt compile --target prod
 ```
 
 The generated `manifest.json` is then prettified and copied to the `tests/_fixtures` folder. I've also manually removed
 the `macros` entries from the file just to make it easier to navigate through it in case of troubleshooting.
 
 ```shell
-cat target/manifest.json | jq > $PROJECT_ROOT/tests/_fixtures/manifest.json
+$ cat target/manifest.json | jq > $PROJECT_ROOT/tests/_fixtures/manifest.json
 ```
 
 ## Future ideas
