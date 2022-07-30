@@ -8,7 +8,7 @@ class TableauRestClient:
     """
 
     def __init__(self, url: str, username: str, password: str):
-        tableau_auth = TSC.TableauAuth(username, password)
+        tableau_auth = TSC.TableauAuth(username, password, site_id='loom')
 
         self.server = TSC.Server(url, use_server_version=True)
         self.server.auth.sign_in(tableau_auth)
