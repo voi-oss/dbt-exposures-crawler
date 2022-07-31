@@ -2,7 +2,6 @@ import json
 from collections import UserDict
 from os import name
 from typing import Any, Dict, Type
-from ruamel.yaml import YAML
 from exposurescrawler.dbt.exposure import DbtExposure
 
 
@@ -42,7 +41,7 @@ class DbtManifest(UserDict):
         #print(self)
 
         #yaml = YAML()
-        
+
         #ff = open(file_name, 'w+')
 #
         ##    version: 2
