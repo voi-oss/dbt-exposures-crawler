@@ -3,6 +3,7 @@ import logging
 import os
 from typing import Collection, List
 from unicodedata import name
+from ruamel.yaml import YAML
 
 import click
 import tableauserverclient as TSC
