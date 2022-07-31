@@ -2,29 +2,31 @@ import itertools
 import logging
 import os
 from typing import Collection, List
+from unicodedata import name
 
 import click
+import tableauserverclient as TSC
+from functools import lru_cache
 
 from exposurescrawler.dbt.exposure import DbtExposure
 from exposurescrawler.dbt.manifest import DbtManifest
+from manifest import DbtManifest
 from exposurescrawler.tableau.graphql_client import (
     retrieve_custom_sql,
     retrieve_native_sql,
 )
 from exposurescrawler.tableau.models import WorkbookModelsMapping
-from exposurescrawler.tableau.rest_client import TableauRestClient
+from rest_client import TableauRestClient
 from exposurescrawler.utils.logger import logger
-from exposurescrawler.utils.query_parsing import search_model_in_query
-
+from query_parsing import search_model_in_query
 
 def _should_ignore_workbook(workbook, projects_to_ignore: Collection[str]) -> bool:
-    # Personal spaces are usually used as a sandbox for experimental work
-    # and we ignore them in this project. In the Tabeau API, they are represented
-    # by workbooks under projects without a name.
-    if not workbook.project_name:
-        return True
-    
-    return workbook.project_name in projects_to_ignore
+    #print("nothing to ignore")
+    try:
+        return workbook.project_name in projects_to_ignore
+    except:
+        print("An exception occurred")
+
 
 
 def _parse_tables_from_sql(workbooks_sqls: WorkbookModelsMapping, models) -> WorkbookModelsMapping:
@@ -41,12 +43,12 @@ def _parse_tables_from_sql(workbooks_sqls: WorkbookModelsMapping, models) -> Wor
     logger().info('⚙️ Parsing SQL: looking for references to models')
 
     output: WorkbookModelsMapping = {}
-
     for workbook_reference, custom_sqls in workbooks_sqls.items():
         # a list of dbt model represented as their original dicts from the manifest
         all_found: List[dict] = []
 
         for custom_sql in custom_sqls:
+            #print(custom_sql)
             if models_found_query := search_model_in_query(custom_sql, models):
                 all_found.extend(models_found_query.values())
 
@@ -66,6 +68,7 @@ def _parse_tables_from_sql(workbooks_sqls: WorkbookModelsMapping, models) -> Wor
     return output
 
 
+
 def tableau_crawler(
     manifest_path: str,
     dbt_package_name: str,
@@ -73,6 +76,7 @@ def tableau_crawler(
     verbose: bool,
 ) -> None:
     # Enable verbose logging
+
     if verbose:
         logger().setLevel(logging.DEBUG)
 
@@ -85,13 +89,15 @@ def tableau_crawler(
 
     # Retrieve all models
     models = manifest.retrieve_models_and_sources()
-
-    # Configure the Tableau REST client
     tableau_client = TableauRestClient(
         os.environ['TABLEAU_URL'],
         os.environ['TABLEAU_USERNAME'],
         os.environ['TABLEAU_PASSWORD'],
     )
+    #print(models)
+
+    # Configure the Tableau REST client
+    #tableau_client = TableauRestClient()
 
     # Retrieve custom SQLs and find model references
     workbooks_custom_sqls = retrieve_custom_sql(tableau_client, 'snowflake')
@@ -125,6 +131,7 @@ def tableau_crawler(
 
     # For every workbook and the models found, create exposures and add
     # to the manifest (in-memory)
+
     for workbook_reference, found in workbooks_models.items():
         workbook = tableau_client.retrieve_workbook(workbook_reference.id)
         owner = tableau_client.retrieve_user(workbook.owner_id)
@@ -136,6 +143,19 @@ def tableau_crawler(
             continue
 
         exposure = DbtExposure.from_tableau_workbook(dbt_package_name, workbook, owner, found)
+        #print(exposure)
+
+        #import json
+        #test_raw = exposure.to_dict()
+        #test_name = test_raw.get("name")
+        #new_name = test_name.rsplit("_",1)[0]
+        #print(new_name)
+
+        #print(file_name)
+        #f = open(file_name, "a")
+        #f.write(str(exposure.to_dict()))
+        #f.write('\n')
+        #f.close()
         manifest.add_exposure(exposure, found)
 
     # Terminate the Tableau client
@@ -145,7 +165,7 @@ def tableau_crawler(
     logger().info('')
     logger().info(f'💾 Writing results to file: {manifest_path}')
     manifest.save(manifest_path)
-
+    
 
 @click.command()
 @click.option(

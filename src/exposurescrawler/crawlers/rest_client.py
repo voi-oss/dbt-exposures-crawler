@@ -6,12 +6,12 @@ class TableauRestClient:
     """
     Thin wrapper around the official Tableau Server client.
     """
-
     def __init__(self, url: str, username: str, password: str):
         tableau_auth = TSC.TableauAuth(username, password, site_id='loom')
-
         self.server = TSC.Server(url, use_server_version=True)
+
         self.server.auth.sign_in(tableau_auth)
+
 
     @lru_cache(maxsize=None)
     def retrieve_workbook(self, workbook_id: str):
