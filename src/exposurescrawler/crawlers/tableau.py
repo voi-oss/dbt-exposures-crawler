@@ -145,17 +145,17 @@ def tableau_crawler(
         exposure = DbtExposure.from_tableau_workbook(dbt_package_name, workbook, owner, found)
         #print(exposure)
 
-        #import json
-        #test_raw = exposure.to_dict()
-        #test_name = test_raw.get("name")
-        #new_name = test_name.rsplit("_",1)[0]
-        #print(new_name)
-
+        import json
+        test_raw = exposure.to_dict()
+        test_name = test_raw.get("name")
+        new_name = test_name.rsplit("_",1)[0]
+        print(new_name)
+        file_name = '/models/exposures/' + new_name + '.txt'
         #print(file_name)
-        #f = open(file_name, "a")
-        #f.write(str(exposure.to_dict()))
-        #f.write('\n')
-        #f.close()
+        f = open(file_name, "a")
+        f.write(str(exposure.to_dict()))
+        f.write('\n')
+        f.close()
         manifest.add_exposure(exposure, found)
 
     # Terminate the Tableau client
@@ -164,8 +164,8 @@ def tableau_crawler(
     # Persist the modified manifest
     logger().info('')
     logger().info(f'💾 Writing results to file: {manifest_path}')
-    manifest.save(manifest_path)
-    
+    #manifest.save(manifest_path)
+
 
 @click.command()
 @click.option(
