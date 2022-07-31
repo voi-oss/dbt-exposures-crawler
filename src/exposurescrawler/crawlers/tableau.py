@@ -150,12 +150,28 @@ def tableau_crawler(
         test_name = test_raw.get("name")
         new_name = test_name.rsplit("_",1)[0]
         print(new_name)
-        file_name = '../../main/models/exposures/' + new_name + '.txt'
+        file_name = '../../main/models/exposures/' + new_name + '.yml'
         #print(file_name)
-        f = open(file_name, "a")
-        f.write(str(exposure.to_dict()))
-        f.write('\n')
-        f.close()
+        ff = open(file_name, "w+")
+        #f.write(str(exposure.to_dict()))
+
+        yaml = YAML()
+
+
+        depends = list(('ref(''' + "'" + k.split('.')[-1] + "'" + ')''').lower() for k in set([model['unique_id'] for model in found]))
+        bb = exposure.to_dict()
+        l = {'name','type','url','description','owner'}
+        bc = {key: bb[key] for key in l if key in bb}
+        yamlData = {
+        'version': 2,
+        'exposures': [{'name': bc.get('name').lower(),'type': bc.get('type').lower(),'url':bc.get('url').lower(),'description':bc.get('description').lower(),'owner':bc.get('owner'), 'depends_on': depends}]
+        }
+        yaml.indent(sequence=4, offset=2)
+        yaml.dump(yamlData, ff)
+
+
+        #f.write('\n')
+        #f.close()
         manifest.add_exposure(exposure, found)
 
     # Terminate the Tableau client
