@@ -150,7 +150,7 @@ def tableau_crawler(
         test_name = test_raw.get("name")
         new_name = test_name.rsplit("_",1)[0]
         print(new_name)
-        file_name = '../..//models/exposures/' + new_name + '.txt'
+        file_name = '../../models/exposures/' + new_name + '.txt'
         #print(file_name)
         f = open(file_name, "a")
         f.write(str(exposure.to_dict()))
