@@ -165,7 +165,7 @@ def tableau_crawler(
         bc = {key: bb[key] for key in l if key in bb}
         yamlData = {
         'version': 2,
-        'exposures': [{'name': bc.get('name').lower(),'type': bc.get('type').lower(),'url':bc.get('url').lower(),'description':bc.get('description').lower(),'owner':bc.get('owner'), 'depends_on': depends}]
+        'exposures': [{'name': bc.get('name').rsplit("_",1)[0].lower(),'type': bc.get('type').lower(),'url':bc.get('url').lower(),'description':bc.get('description').lower(),'owner':bc.get('owner'), 'depends_on': depends}]
         }
         yaml.indent(sequence=4, offset=2)
         yaml.dump(yamlData, ff)
