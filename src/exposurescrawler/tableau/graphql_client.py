@@ -1,4 +1,5 @@
 import pathlib
+from typing import Optional
 
 from exposurescrawler.tableau.models import WorkbookReference, WorkbookModelsMapping
 from exposurescrawler.tableau.rest_client import TableauRestClient
@@ -24,7 +25,7 @@ GRAPHQL_NATIVE_SQL_QUERY_FILE = '_native_sql_graphql_query.txt'
 
 
 def retrieve_custom_sql(
-    tableau_client: TableauRestClient, only_connection_type: str = None
+    tableau_client: TableauRestClient, only_connection_type: Optional[str] = None
 ) -> WorkbookModelsMapping:
     """
     Starts at CustomSQLTables and trace them back to workbooks.

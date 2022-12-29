@@ -138,9 +138,6 @@ def tableau_crawler(
         exposure = DbtExposure.from_tableau_workbook(dbt_package_name, workbook, owner, found)
         manifest.add_exposure(exposure, found)
 
-    # Terminate the Tableau client
-    tableau_client.sign_out()
-
     # Persist the modified manifest
     logger().info('')
     logger().info(f'💾 Writing results to file: {manifest_path}')
