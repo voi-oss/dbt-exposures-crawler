@@ -16,7 +16,7 @@ are supported as a source.
 
 ## Installation
 
-This project requires Python 3.8+. It has only been tested with dbt 0.19, Tableau Server 2021.1 and Snowflake SQL
+This project requires Python 3.8+. We have  tested it internally with dbt 1.x, Tableau Server 2022.1 and Snowflake SQL
 dialect.
 
 You can install the latest version of this package from PyPI by running the command below. Usage instructions can be
