@@ -39,6 +39,8 @@ def retrieve_custom_sql(
     workbooks_custom_sqls: WorkbookModelsMapping = {}
 
     for custom_sql_table in results['customSQLTablesConnection']['nodes']:
+        if custom_sql_table['database'] is None:
+            continue
         if (
             only_connection_type
             and custom_sql_table['database']['connectionType'] != only_connection_type

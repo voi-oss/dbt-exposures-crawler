@@ -175,6 +175,10 @@ def mock_tableau_rest_api():
         'TABLEAU_URL': 'https://my-tableau-server.com',
         'TABLEAU_USERNAME': '',
         'TABLEAU_PASSWORD': '',
+        'TABLEAU_SITE': '',
+        'TABLEAU_LOGIN_METHOD': 'credentials',
+        'TABLEAU_PAT_NAME': '',
+        'TABLEAU_PAT_SECRET': ''
     },
     clear=True,
 )
