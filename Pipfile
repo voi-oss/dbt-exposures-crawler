@@ -4,7 +4,7 @@ url = 'https://pypi.org/simple'
 verify_ssl = true
 
 [packages]
-tableauserverclient = '~= 0.10'
+tableauserverclient = "*"
 python-slugify = '~= 4.0.1'
 click = '~= 8.0.1'
 

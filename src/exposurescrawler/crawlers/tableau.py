@@ -98,11 +98,11 @@ def tableau_crawler(
     )
 
     # Retrieve custom SQLs and find model references
-    workbooks_custom_sqls = retrieve_custom_sql(tableau_client, 'snowflake')
+    workbooks_custom_sqls = retrieve_custom_sql(tableau_client, 'bigquery')
     workbooks_custom_sql_models = _parse_tables_from_sql(workbooks_custom_sqls, models)
 
     # Retrieve native SQLs and find model references
-    workbooks_native_sqls = retrieve_native_sql(tableau_client, 'snowflake')
+    workbooks_native_sqls = retrieve_native_sql(tableau_client, 'bigquery')
     workbooks_native_sql_models = _parse_tables_from_sql(workbooks_native_sqls, models)
 
     # Merge the results by chaining the iterables
