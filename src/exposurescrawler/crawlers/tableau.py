@@ -69,6 +69,7 @@ def _parse_tables_from_sql(workbooks_sqls: WorkbookModelsMapping, models) -> Wor
 def tableau_crawler(
     manifest_path: str,
     dbt_package_name: str,
+    connection_type: str,
     tableau_projects_to_ignore: Collection[str],
     verbose: bool,
 ) -> None:
@@ -88,21 +89,21 @@ def tableau_crawler(
 
     # Configure the Tableau REST client
     tableau_client = TableauRestClient(
-        url=os.environ['TABLEAU_URL'],
-        login_method=os.environ['TABLEAU_LOGIN_METHOD'] or 'credentials',
-        site=os.environ['TABLEAU_SITE'] or 'Default',
-        username=os.environ['TABLEAU_USERNAME'] or None,
-        password=os.environ['TABLEAU_PASSWORD'] or None,
-        pat_name=os.environ['TABLEAU_PAT_NAME'] or None,
-        pat_secret=os.environ['TABLEAU_PAT_SECRET'] or None,
+        url=os.getenv('TABLEAU_URL'),
+        login_method=os.getenv('TABLEAU_LOGIN_METHOD', default='credentials'),
+        site=os.getenv('TABLEAU_SITE', default='Default'),
+        username=os.getenv('TABLEAU_USERNAME'),
+        password=os.getenv('TABLEAU_PASSWORD'),
+        pat_name=os.getenv('TABLEAU_PAT_NAME'),
+        pat_secret=os.getenv('TABLEAU_PAT_SECRET'),
     )
 
     # Retrieve custom SQLs and find model references
-    workbooks_custom_sqls = retrieve_custom_sql(tableau_client, 'bigquery')
+    workbooks_custom_sqls = retrieve_custom_sql(tableau_client, connection_type)
     workbooks_custom_sql_models = _parse_tables_from_sql(workbooks_custom_sqls, models)
 
     # Retrieve native SQLs and find model references
-    workbooks_native_sqls = retrieve_native_sql(tableau_client, 'bigquery')
+    workbooks_native_sqls = retrieve_native_sql(tableau_client, connection_type)
     workbooks_native_sql_models = _parse_tables_from_sql(workbooks_native_sqls, models)
 
     # Merge the results by chaining the iterables
@@ -163,6 +164,12 @@ def tableau_crawler(
     'name of your dbt project on dbt_project.yml',
 )
 @click.option(
+    '--connection_type',
+    'connection_type',
+    default='bigquery',
+    help='The provider of the database. Eg: bigquery, snowflake',
+)
+@click.option(
     '--tableau-ignore-projects',
     'tableau_projects_to_ignore',
     default=[],
@@ -172,10 +179,13 @@ def tableau_crawler(
 def tableau_crawler_command(
     manifest_path: str,
     dbt_package_name: str,
+    connection_type: str,
     tableau_projects_to_ignore: Collection[str],
     verbose: bool,
 ):
-    tableau_crawler(manifest_path, dbt_package_name, tableau_projects_to_ignore, verbose)
+    tableau_crawler(
+        manifest_path, dbt_package_name, connection_type, tableau_projects_to_ignore, verbose
+    )
 
 
 if __name__ == '__main__':

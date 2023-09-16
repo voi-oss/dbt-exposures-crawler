@@ -178,13 +178,13 @@ def mock_tableau_rest_api():
         'TABLEAU_SITE': '',
         'TABLEAU_LOGIN_METHOD': 'credentials',
         'TABLEAU_PAT_NAME': '',
-        'TABLEAU_PAT_SECRET': ''
+        'TABLEAU_PAT_SECRET': '',
     },
     clear=True,
 )
 def test_tableau_crawler(manifest_path):
     with patch.object(DbtManifest, 'save', autospec=True) as mock:
-        tableau_crawler(manifest_path, 'jeffle_shop', [], True)
+        tableau_crawler(manifest_path, 'jeffle_shop', 'snowflake', [], True)
 
         final_manifest = mock.call_args.args[0].data
         exposure = final_manifest['exposures']['exposure.jeffle_shop.tableau_orders_workbook_ccc']

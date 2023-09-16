@@ -13,7 +13,7 @@ def search_model_in_query(query: str, models: Mapping[str, Any]) -> Dict[str, An
 
     found: Dict[str, Any] = {}
 
-    query = query.lower().replace('"', '').replace("'", '') #why lower?
+    query = query.lower().replace('"', '').replace("'", '')  # why lower?
 
     for model in models.keys():
         if model.lower() in query:
