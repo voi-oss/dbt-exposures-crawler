@@ -14,19 +14,50 @@ are supported as a source.
 > Please reach out if you try this at your own organization. Feedback is very appreciated, and we
 > would love to hear if you had any issues setting this up at your own.
 
+## Version compatibility
+
+This project requires Python 3.8+. The latest published version of this package has been tested internally (at Voi) with
+dbt 1.x, Tableau Server 2023.1 and Snowflake SQL dialect.
+
+Here is a summary of which versions from dbt and Tableau have been tested internally for recent versions of this
+package, but it doesn't mean that other dbt and Tableau versions will not work.
+
+| dbt-exposures-crawler | dbt version |        Tableau version         | SQL dialect |
+|:---------------------:|:-----------:|:------------------------------:|:-----------:|
+|        v0.1.4         |  1.1 - 1.4  | Tableau Server 2022.1 - 2023.1 |  Snowflake  |
+
 ## Installation
 
-This project requires Python 3.8+. We have  tested it internally with dbt 1.x, Tableau Server 2022.1 and Snowflake SQL
-dialect.
-
-You can install the latest version of this package from PyPI by running the command below. Usage instructions can be
-found further below in this document.
+You can install the latest version of this package from PyPI by running the command below.
 
 ```shell
 $ pip install dbt-exposures-crawler
 ```
 
-## Motivation
+## Usage
+
+Internally, we use this automation at Voi as part of our dbt docs release pipeline. We have a GitHub Action that does
+the following:
+
+1. Clone our dbt repository;
+2. Install dbt and our dependencies;
+3. Run `dbt docs generate` (it should be run against the production environment);
+4. Run this project (using the `manifest.json` generated from the previous command as input);
+5. Publish the generated documentation portal;
+
+To run this project, we use:
+
+```shell
+$ python3 -m exposurescrawler.crawlers.tableau \
+            --manifest-path=~path/to/dbt/target/manifest.json \
+            --dbt-package-name="your_dbt_package_name" \
+            --tableau-ignore-projects Archive \
+            --verbose
+```
+
+Make sure you check the `.env.example` file to see which environment variables must be defined.
+
+## Project motivation
 
 [dbt](https://www.getdbt.com/) is an open-source tool to manage data transformations in SQL. It automatically generates
 a documentation portal from your project which includes a dependency lineage graph. It is possible to add external
@@ -35,7 +66,7 @@ downstream dependencies to this graph (such as a dashboard on a Business Intelli
 files.
 
 This project automates the creation of exposures by implementing crawlers to parse the metadata of downstream tools.
-Currently, only Tableau dashboards are supported, but we have plans to include Metabase as well.
+Currently, only Tableau dashboards are supported.
 
 A few use cases on how having exposures can help:
 
@@ -46,13 +77,13 @@ A few use cases on how having exposures can help:
 
 ## How it works
 
-Summary:
+This Python package will, in summary:
 
 1. Retrieve dbt models and sources from `manifest.json`;
-2. Extract metadata (custom SQL and table references) from Tableau workbooks using their GraphQL API);
-3. Try to find occurrences from the dbt models and sources in the Tableau SQL;
+2. Extract metadata (custom SQL and table references) from Tableau workbooks using their GraphQL API;
+3. Try to find occurrences of the dbt models and sources in the Tableau SQL;
 4. Use the Tableau REST API to retrieve additional information about the workbooks (author, project, etc);
-5. Create the dbt exposures (in-memory) and write it back to the `manifest.json`.
+5. Create the dbt exposures (in-memory) and write them back to the `manifest.json`.
 
 More in-depth explanation:
 
@@ -68,31 +99,32 @@ be [manually enabled](https://help.tableau.com/current/api/metadata_api/en-us/do
 if you host your own Tableau Server.
 
 The SQL from the custom SQL workbooks and the table names from the native SQL workbooks are normalized through simple
-heuristics, such as removing quotes and converting the custom SQL to lowercase. Now that both normalized SQL and
-normalized table names from Tableau, and the fully qualified names for the dbt nodes are available, the project tries to
-find the occurrences of the latter in the former.
+heuristics, such as removing quotes and converting the custom SQL to lowercase. With the normalized SQL and
+normalized table names from Tableau, and the fully qualified names for the dbt nodes available, this package tries
+to find the occurrences of the latter in the former.
 
-The result of the above is a mapping of workbooks and which dbt nodes they depend on. For every workbook (with mapped
-dependencies available), extra metadata that was not available in the Metadata API is then retrieved from Tableau by
+The result is a mapping of workbooks and which dbt nodes they depend on. For every workbook (with mapped
+dependencies available), extra metadata that was not available in the Metadata API is then retrieved from Tableau
 using their [REST API](https://help.tableau.com/current/api/rest_api/en-us/REST/rest_api.htm), including when the
-workbook was created, when it was last updated, to which folder it belongs on Tableau and information about the author
-of the workbook.
+workbook was created, when it was last updated, to which folder it belongs to on Tableau and information about its
+author.
 
 As a final step, the information above is written back in the provided `manifest.json` in the form of exposures. Note
-that instead of generating `.yaml` files for each exposure, they are written directly on the `manifest.json`.
+that instead of generating `.yaml` files on disk for each exposure, the exposures are written directly on
+the `manifest.json`, which can then be used to publish the dbt documentation portal.
 
 ## Example
 
-To better understand how the project works, let's take as an example
+To better understand how this package works, let's take as an example
 the [jaffle_shop](https://github.com/fishtown-analytics/jaffle_shop) dbt sample project. It has, among other models,
 a `customers` and an `orders` model.
 
 Now suppose that you company has 4 workbooks on Tableau:
 
-* Customers workbook: accesses the `customers` dbt model through custom SQL;
-* Company KPIs workbook: accesses both models through custom SQL;
-* Orders workbook: accesses the `orders` model without custom SQL;
-* Unrelated workbook: a workbook that does not use the dbt project but instead has a static data source.
+* `Customers workbook`: accesses the `customers` dbt model through custom SQL;
+* `Company KPIs workbook`: accesses both models through custom SQL;
+* `Orders workbook`: accesses the `orders` model without custom SQL;
+* `Unrelated workbook`: a workbook that does not use the dbt project but instead has a static data source.
 
 When running this project, you would get the following console output:
 
@@ -148,34 +180,18 @@ section below.
 
 ## Features, assumptions and limitations
 
-* Only custom SQL written on Tableau workbooks using fully qualified names (`DATABASE.SCHEMA.OBJECT`) will be detected;
+* A folder name can be provided to ignore workbooks that belong to it. For example, if you have a folder called
+  `Archive` on Tableau, you can pass `--tableau-ignore-projects Archive` to ignore all workbooks that belong to it;
 * For now, only Tableau workbooks (and not published data sources) are supported. Also, only Snowflake SQL is currently
-  supported;
-* Workbooks that are created under Tableau's [Personal spaces](https://help.tableau.com/current/pro/desktop/en-us/personal_space.htm) 
-are ignored (since they usually not governed nor production-ready).
+  supported. Custom SQL must use Snowflake fully qualified names (i.e. `database.schema.object`);
+* Workbooks that are created under
+  Tableau's [Personal spaces](https://help.tableau.com/current/pro/desktop/en-us/personal_space.htm)
+  are ignored (since they usually not governed nor production-ready).
 
-## Usage
+## Related projects
 
-Internally, we use this automation as part of our dbt docs release pipeline. We have a GitHub Action that does the
-following:
-
-1. Clone our dbt repository;
-2. Install dbt and our dependencies;
-3. Run `dbt docs generate` (remember to run it against your production environment);
-4. Run this project (using the `manifest.json` generated from the previous command as input);
-5. Publish the generated documentation portal;
-
-To run this project, we use:
-
-```shell
-$ python3 -m exposurescrawler.crawlers.tableau \
-            --manifest-path=~path/to/dbt/target/manifest.json \
-            --dbt-package-name="your_dbt_pakage_name" \
-            --tableau-ignore-projects Archive \
-            --verbose
-```
-
-Make sure you check the `.env.example` file to see which environment variables must be defined.
+If you use Metabase, the [dbt-metabase](https://github.com/gouline/dbt-metabase#exposure-extraction) open-source project
+offers similar functionality to this project, but extracting exposures from Metabase dashboards instead of Tableau.
 
 ## Development
 
@@ -190,7 +206,7 @@ Before opening a pull request, make sure you run:
 * `make lint`: runs `mypy`, `black` and `flake8`;
 * `make test`: runs all tests
 
-## Architecture
+### Architecture
 
 The entry point for the crawlers should be on the `crawlers` module. For now, only Tableau is supported.
 
@@ -201,7 +217,7 @@ manifests.
 
 Finally, the `utils` module has functions for logging and string parsing.
 
-## Testing
+### Testing
 
 For the integration tests, we use a sample `manifest.json` as a fixture. It was manually generated from
 the [jaffle_shop](https://github.com/fishtown-analytics/jaffle_shop), an official dbt sample project.
@@ -231,7 +247,6 @@ $ cat target/manifest.json | jq > $PROJECT_ROOT/tests/_fixtures/manifest.json
 
 * Allow filters to be passed. E.g. only include Tableau workbooks with certain tags;
 * Add support to Tableau published data sources;
-* Include other BI tools to be crawled, such as Metabase.
 
 ## Contributing
 
