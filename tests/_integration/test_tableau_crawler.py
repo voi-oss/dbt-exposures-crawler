@@ -180,10 +180,10 @@ def mock_tableau_rest_api():
 )
 def test_tableau_crawler(manifest_path):
     with patch.object(DbtManifest, 'save', autospec=True) as mock:
-        tableau_crawler(manifest_path, 'jeffle_shop', [], True)
+        tableau_crawler(manifest_path, 'jaffle_shop', [], True)
 
         final_manifest = mock.call_args.args[0].data
-        exposure = final_manifest['exposures']['exposure.jeffle_shop.tableau_orders_workbook_ccc']
+        exposure = final_manifest['exposures']['exposure.jaffle_shop.tableau_orders_workbook_ccc']
 
         assert len(final_manifest['exposures']) == 3
         assert exposure['name'] == 'tableau_orders_workbook_ccc'

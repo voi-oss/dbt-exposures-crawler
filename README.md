@@ -24,7 +24,7 @@ package, but it doesn't mean that other dbt and Tableau versions will not work.
 
 | dbt-exposures-crawler | dbt version |        Tableau version         | SQL dialect |
 |:---------------------:|:-----------:|:------------------------------:|:-----------:|
-|        v0.1.4         |  1.1 - 1.4  | Tableau Server 2022.1 - 2023.1 |  Snowflake  |
+|     0.1.4 - 0.1.5     |  1.1 - 1.4  | Tableau Server 2022.1 - 2023.1 |  Snowflake  |
 
 ## Installation
 
@@ -220,24 +220,45 @@ Finally, the `utils` module has functions for logging and string parsing.
 ### Testing
 
 For the integration tests, we use a sample `manifest.json` as a fixture. It was manually generated from
-the [jaffle_shop](https://github.com/fishtown-analytics/jaffle_shop), an official dbt sample project.
+the [jaffle_shop](https://github.com/fishtown-analytics/jaffle_shop), an official dbt sample project. The following
+steps can be used to recreate it or to generate a new manifest on a more recent dbt version.
+
+First, the dbt sample project should be cloned and dbt needs to be installed:
 
 ```shell
 $ git clone https://github.com/fishtown-analytics/jaffle_shop
 $ cd jaffle_shop
 $ pipenv shell
-$ pip install dbt==0.19.1
+$ pip install dbt-snowflake==1.4.4
 ```
 
-After adding an entry on my dbt profile and then setting the default database on the project to `sample_dbt` on
-the `dbt_project.yaml`:
+Then, a new `profiles.yml` should be created in the same folder with the following configuration:
+
+```yaml
+jaffle_shop:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      database: sample_db
+      account: ...
+      user: ...
+      private_key_path: ...
+      private_key_passphrase: ...
+      warehouse: ...
+      role: ...
+      schema: ...
+```
+
+Afterward, the project can be compiled by running:
 
 ```shell
-$ dbt compile --target prod
+$ dbt compile --target dev
 ```
 
-The generated `manifest.json` is then prettified and copied to the `tests/_fixtures` folder. I've also manually removed
-the `macros` entries from the file just to make it easier to navigate through it in case of troubleshooting.
+The generated `manifest.json` should then be prettified and copied to the `tests/_fixtures` folder in this repository.
+You can also manually remove the `macros` entries from the file since they are not needed and they make the file
+much larger and harder to be manually inspected
 
 ```shell
 $ cat target/manifest.json | jq > $PROJECT_ROOT/tests/_fixtures/manifest.json
