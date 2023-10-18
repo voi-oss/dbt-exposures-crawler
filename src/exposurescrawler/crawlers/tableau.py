@@ -90,11 +90,16 @@ def tableau_crawler(
 
     # Retrieve all models
     models = manifest.retrieve_models_and_sources()
-    tableau_client = TableauRestClient(
-        os.environ['TABLEAU_URL'],
-        os.environ['TABLEAU_USERNAME'],
-        os.environ['TABLEAU_PASSWORD'],
-    )
+    tableau_token = os.environ['TABLEAU_TOKEN']
+    tableau_server_url = os.environ['TABLEAU_URL']
+
+    tableau_auth = TSC.PersonalAccessTokenAuth(token_name='crawler', personal_access_token=tableau_token, site_id='loom')
+    server = TSC.Server(tableau_server_url)
+    tableau_client = server.auth.sign_in(tableau_auth)
+    with server.auth.sign_in(tableau_auth):
+    # Now you have a signed-in server object (server) that you can use for making API calls
+    # For example: workbooks, views, projects, etc.
+        print('Signed in successfully!')
     #print(models)
 
     # Configure the Tableau REST client
