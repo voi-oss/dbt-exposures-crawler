@@ -26,6 +26,7 @@ class TableauRestClient:
         return user
 
     def run_metadata_api(self, query: str):
+        print()
         with self.server.auth.sign_in(self.tableau_auth):
             response = self.server.metadata.query(query)
 
