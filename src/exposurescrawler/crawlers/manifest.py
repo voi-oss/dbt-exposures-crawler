@@ -1,7 +1,7 @@
 import json
 from collections import UserDict
+from os import name
 from typing import Any, Dict, Type
-
 from exposurescrawler.dbt.exposure import DbtExposure
 
 
@@ -38,6 +38,25 @@ class DbtManifest(UserDict):
     def add_exposure(self, exposure: DbtExposure, found):
         self['exposures'][exposure.unique_id] = exposure.to_dict()
         self['parent_map'][exposure.unique_id] = list(set([model['unique_id'] for model in found]))
+        #print(self)
+
+        #yaml = YAML()
+
+        #ff = open(file_name, 'w+')
+#
+        ##    version: 2
+        ##   exposures: [{'name','type','url','description','owner'}]
+        ##"""
+        #depends = list(('ref(''' + "'" + k.split('.')[-1] + "'" + ')''').lower() for k in set([model['unique_id'] for model in found]))
+        #bb = exposure.to_dict()
+        #l = {'name','type','url','description','owner'}
+        #bc = {key: bb[key] for key in l if key in bb}
+        #yamlData = {
+        #'version': 2,
+        #'exposures': [{'name': bc.get('name').lower(),'type': bc.get('type').lower(),'url':bc.get('url').lower(),'description':bc.get('description').lower(),'owner':bc.get('owner'), 'depends_on': depends}]
+        #}
+        #yaml.indent(sequence=4, offset=2)
+        #yaml.dump(yamlData, ff)
 
     def to_dict(self):
         return self.data
