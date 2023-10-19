@@ -16,6 +16,7 @@ from functools import lru_cache
 
 from exposurescrawler.dbt.exposure import DbtExposure
 from exposurescrawler.dbt.manifest import DbtManifest
+from manifest import DbtManifest
 from graphql_client import (
     retrieve_custom_sql,
     retrieve_native_sql
