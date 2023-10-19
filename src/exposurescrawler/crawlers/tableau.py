@@ -22,7 +22,6 @@ from graphql_client import (
 )
 from exposurescrawler.tableau.models import WorkbookModelsMapping
 from rest_client import TableauRestClient
-from tableau_api_lib import TableauServerConnection
 from exposurescrawler.utils.logger import logger
 from query_parsing import search_model_in_query
 
