@@ -71,7 +71,7 @@ def retrieve_all_workbook_owner_map(tableau_client: TableauRestClient):
     :param tableau_client: Tableau rest client
     :return: the dictionary of {workbook_id, WorkbookItem}
     """
-    logger().info(f'⚙️ Retrieving all workbooks (batch)')
+    logger().info('⚙️ Retrieving all workbooks (batch)')
 
     all_workbooks = tableau_client.retrieve_all_workbooks()
     logger().info(f'✅ Fetched {len(all_workbooks)} workbooks')
@@ -84,7 +84,7 @@ def retrieve_all_user_id_map(tableau_client: TableauRestClient):
     :param tableau_client: Tableau rest client
     :return: the dictionary of {user_id, UserItem}
     """
-    logger().info(f'⚙️ Retrieving all users (batch)')
+    logger().info('⚙️ Retrieving all users (batch)')
 
     all_users = tableau_client.retrieve_all_users()
     logger().info(f'⚙️ Fetched {len(all_users)} users')
