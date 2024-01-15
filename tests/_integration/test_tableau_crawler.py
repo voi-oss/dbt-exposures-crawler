@@ -45,7 +45,7 @@ def mock_graphql_custom_sql_result():
                 },
                 {
                     'query': "select * from sample_db.public.customers left join "
-                    "sample_db.public.orders on customers.id = orders.customer_id",
+                             "sample_db.public.orders on customers.id = orders.customer_id",
                     'name': 'Custom SQL Query',
                     'isEmbedded': None,
                     'database': {'name': 'SAMPLE_DB', 'connectionType': 'snowflake'},
@@ -150,11 +150,16 @@ def mock_tableau_rest_api():
     UserDetailsMock = namedtuple('UserDetailsMock', ['id', 'fullname', 'name'])
 
     workbook_details = {
-        'customers-workbook-luid': WorkbookDetailsMock(id='aaa', name='Customers workbook'),
-        'company-kpis-workbook-luid': WorkbookDetailsMock(id='bbb', name='Company KPIs workbook'),
+        'customers-workbook-luid': WorkbookDetailsMock(id='customers-workbook-luid', name='Customers workbook',
+                                                       owner_id='user-id'),
+        'company-kpis-workbook-luid': WorkbookDetailsMock(id='company-kpis-workbook-luid', name='Company KPIs workbook',
+                                                          owner_id='user-id'),
         'orders-workbook-luid': WorkbookDetailsMock(
-            id='ccc', name='Orders workbook', tags=['certified']
+            id='orders-workbook-luid', name='Orders workbook', tags=['certified'], owner_id='user-id'
         ),
+    }
+    user_details = {
+        'user-id': UserDetailsMock('user-id', 'John Doe', 'john.doe@example.com')
     }
 
     def _get_workbook_details(workbook_id):
@@ -163,9 +168,13 @@ def mock_tableau_rest_api():
     with patch('exposurescrawler.crawlers.tableau.TableauRestClient', autospec=True) as mock:
         instance = mock.return_value
         instance.retrieve_workbook.side_effect = _get_workbook_details
-        instance.retrieve_user.return_value = UserDetailsMock(
-            'user-id', 'John Doe', 'john.doe@example.com'
-        )
+        instance.retrieve_user.return_value = user_details['user-id']
+        instance.retrieve_all_users.return_value = [user_details['user-id']]
+        instance.retrieve_all_workbooks.return_value = [
+            workbook_details['customers-workbook-luid'],
+            workbook_details['company-kpis-workbook-luid'],
+            workbook_details['orders-workbook-luid']
+        ]
         yield
 
 
@@ -183,10 +192,10 @@ def test_tableau_crawler(manifest_path):
         tableau_crawler(manifest_path, 'jaffle_shop', [], True)
 
         final_manifest = mock.call_args.args[0].data
-        exposure = final_manifest['exposures']['exposure.jaffle_shop.tableau_orders_workbook_ccc']
+        exposure = final_manifest['exposures']['exposure.jaffle_shop.tableau_orders_workbook_ord']
 
         assert len(final_manifest['exposures']) == 3
-        assert exposure['name'] == 'tableau_orders_workbook_ccc'
+        assert exposure['name'] == 'tableau_orders_workbook_ord'
         assert 'Workbook description' in exposure['description']
         assert 'https://my-tableau-server.com/path/to/workbook' in exposure['description']
         assert exposure['type'] == 'Dashboard'
