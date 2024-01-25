@@ -30,3 +30,15 @@ class TableauRestClient:
             response = self.server.metadata.query(query)
 
         return response['data']
+
+    def retrieve_all_workbooks(self):
+        with self.server.auth.sign_in(self.tableau_auth):
+            all_workbooks = list(TSC.Pager(self.server.workbooks))
+
+        return all_workbooks
+
+    def retrieve_all_users(self):
+        with self.server.auth.sign_in(self.tableau_auth):
+            all_users = list(TSC.Pager(self.server.users))
+
+        return all_users

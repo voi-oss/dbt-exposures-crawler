@@ -23,7 +23,7 @@ def _should_ignore_workbook(workbook, projects_to_ignore: Collection[str]) -> bo
     # by workbooks under projects without a name.
     if not workbook.project_name:
         return True
-    
+
     return workbook.project_name in projects_to_ignore
 
 
@@ -41,7 +41,6 @@ def _parse_tables_from_sql(workbooks_sqls: WorkbookModelsMapping, models) -> Wor
     logger().info('⚙️ Parsing SQL: looking for references to models')
 
     output: WorkbookModelsMapping = {}
-
     for workbook_reference, custom_sqls in workbooks_sqls.items():
         # a list of dbt model represented as their original dicts from the manifest
         all_found: List[dict] = []
@@ -66,11 +65,38 @@ def _parse_tables_from_sql(workbooks_sqls: WorkbookModelsMapping, models) -> Wor
     return output
 
 
+def retrieve_all_workbook_owner_map(tableau_client: TableauRestClient):
+    """
+
+    :param tableau_client: Tableau rest client
+    :return: the dictionary of {workbook_id, WorkbookItem}
+    """
+    logger().info('⚙️ Retrieving all workbooks (batch)')
+
+    all_workbooks = tableau_client.retrieve_all_workbooks()
+    logger().info(f'✅ Fetched {len(all_workbooks)} workbooks')
+    return dict((workbook.id, workbook) for workbook in all_workbooks)
+
+
+def retrieve_all_user_id_map(tableau_client: TableauRestClient):
+    """
+
+    :param tableau_client: Tableau rest client
+    :return: the dictionary of {user_id, UserItem}
+    """
+    logger().info('⚙️ Retrieving all users (batch)')
+
+    all_users = tableau_client.retrieve_all_users()
+    logger().info(f'⚙️ Fetched {len(all_users)} users')
+
+    return dict((user.id, user) for user in all_users)
+
+
 def tableau_crawler(
-    manifest_path: str,
-    dbt_package_name: str,
-    tableau_projects_to_ignore: Collection[str],
-    verbose: bool,
+        manifest_path: str,
+        dbt_package_name: str,
+        tableau_projects_to_ignore: Collection[str],
+        verbose: bool,
 ) -> None:
     # Enable verbose logging
     if verbose:
@@ -107,7 +133,7 @@ def tableau_crawler(
     workbooks_models: WorkbookModelsMapping = {}
 
     for workbook_reference, found in itertools.chain(
-        workbooks_custom_sql_models.items(), workbooks_native_sql_models.items()
+            workbooks_custom_sql_models.items(), workbooks_native_sql_models.items()
     ):
         workbooks_models.setdefault(workbook_reference, []).extend(found)
 
@@ -123,12 +149,15 @@ def tableau_crawler(
     logger().info('')
     logger().info('🌏 Retrieving workbooks and authors metadata from the Tableau REST API')
 
+    # Fetching all workbooks and users using Tableau batch API and keep in a dictionary.
+    workbook_owner_map = retrieve_all_workbook_owner_map(tableau_client)
+    user_userid_map = retrieve_all_user_id_map(tableau_client)
+
     # For every workbook and the models found, create exposures and add
     # to the manifest (in-memory)
     for workbook_reference, found in workbooks_models.items():
-        workbook = tableau_client.retrieve_workbook(workbook_reference.id)
-        owner = tableau_client.retrieve_user(workbook.owner_id)
-
+        workbook = workbook_owner_map[workbook_reference.id]
+        owner = user_userid_map[workbook.owner_id]
         if _should_ignore_workbook(workbook, tableau_projects_to_ignore):
             logger().debug(
                 f'⏩ Skipping workbook: {workbook.name} ({workbook.project_name} is ignored)'
@@ -137,7 +166,6 @@ def tableau_crawler(
 
         exposure = DbtExposure.from_tableau_workbook(dbt_package_name, workbook, owner, found)
         manifest.add_exposure(exposure, found)
-
     # Persist the modified manifest
     logger().info('')
     logger().info(f'💾 Writing results to file: {manifest_path}')
@@ -156,7 +184,7 @@ def tableau_crawler(
     required=True,
     metavar='PROJECT_NAME',
     help='The name of the dbt pacakge where the exposures should be added. If in doubt, check the '
-    'name of your dbt project on dbt_project.yml',
+         'name of your dbt project on dbt_project.yml',
 )
 @click.option(
     '--tableau-ignore-projects',
@@ -166,10 +194,10 @@ def tableau_crawler(
 )
 @click.option('-v', '--verbose', is_flag=True, default=False, help='Enable verbose logging')
 def tableau_crawler_command(
-    manifest_path: str,
-    dbt_package_name: str,
-    tableau_projects_to_ignore: Collection[str],
-    verbose: bool,
+        manifest_path: str,
+        dbt_package_name: str,
+        tableau_projects_to_ignore: Collection[str],
+        verbose: bool,
 ):
     tableau_crawler(manifest_path, dbt_package_name, tableau_projects_to_ignore, verbose)
 
