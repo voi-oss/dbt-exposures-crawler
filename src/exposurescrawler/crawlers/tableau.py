@@ -113,11 +113,18 @@ def tableau_crawler(
     models = manifest.retrieve_models_and_sources()
 
     # Configure the Tableau REST client
-    tableau_client = TableauRestClient(
-        os.environ['TABLEAU_URL'],
-        os.environ['TABLEAU_USERNAME'],
-        os.environ['TABLEAU_PASSWORD'],
-    )
+    if 'TABLEAU_USERNAME' in os.environ and 'TABLEAU_PASSWORD' in os.environ:
+        tableau_client = TableauRestClient.config_user_and_password(
+            os.environ['TABLEAU_URL'],
+            os.environ['TABLEAU_USERNAME'],
+            os.environ['TABLEAU_PASSWORD'],
+        )
+    else:
+        tableau_client = TableauRestClient.config_token(
+            os.environ['TABLEAU_URL'],
+            os.environ['TABLEAU_TOKEN_NAME'],
+            os.environ['TABLEAU_TOKEN_VALUE'],
+        )
 
     # Retrieve custom SQLs and find model references
     workbooks_custom_sqls = retrieve_custom_sql(tableau_client, 'snowflake')

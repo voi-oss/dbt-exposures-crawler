@@ -5,11 +5,28 @@ from functools import lru_cache
 class TableauRestClient:
     """
     Thin wrapper around the official Tableau Server client.
+    Initialized with user+passw or access token
     """
 
-    def __init__(self, url: str, username: str, password: str):
-        self.tableau_auth = TSC.TableauAuth(username, password)
+    def __init__(self, url: str):
+        self.url = url
         self.server = TSC.Server(url, use_server_version=True)
+
+    @classmethod
+    def config_user_and_password(cls, url: str, username: str, password: str):
+        # Specific initialization to tableau server via user and password
+        tableau_cls = cls(url=url)
+        tableau_cls.tableau_auth = TSC.TableauAuth(username, password)
+
+        return tableau_cls
+
+    @classmethod
+    def config_token(cls, url: str, token_name: str, token_value: str):
+        # Specific initialization to tableau server via access token
+        tableau_cls = cls(url=url)
+        tableau_cls.tableau_auth = TSC.PersonalAccessTokenAuth(token_name, token_value)
+
+        return tableau_cls
 
     @lru_cache(maxsize=None)
     def retrieve_workbook(self, workbook_id: str):
